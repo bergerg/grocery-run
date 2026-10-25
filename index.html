@@ -86,6 +86,20 @@
       <div class="hlist" id="hlist"></div>
     </div>
 
+    <div id="agentBox" hidden>
+      <h3 class="h3gap">Agent access</h3>
+      <p class="small">Let an assistant (MCP or API) read and add to this list on your behalf. Each token works for this household only, and stops working if you leave it.</p>
+      <div id="tokenList" class="tlist"></div>
+      <form class="row" id="tokenForm"><input id="tokenName" placeholder="e.g. WhatsApp agent" maxlength="40"><button class="btn ghost" type="submit">Create token</button></form>
+      <div id="newToken" class="share" hidden>
+        <h3>Copy now. It won't be shown again</h3>
+        <div class="kv"><span>Token</span><code id="tokVal"></code></div>
+        <div class="kv"><span>MCP URL</span><code id="mcpUrl"></code></div>
+        <p class="small">Send the token as the header <code>Authorization: Bearer &lt;token&gt;</code>.</p>
+        <div class="row"><button id="copyTok" class="btn" type="button">Copy token</button><button id="copyMcp" class="btn ghost" type="button">Copy MCP URL</button></div>
+      </div>
+    </div>
+
     <div>
       <h3 class="h3gap">Join with a code</h3>
       <form class="row" id="joinForm"><input id="joinCode" placeholder="ABCDE23456" maxlength="12" autocapitalize="characters"><button class="btn" type="submit">Join</button></form>

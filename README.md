@@ -20,6 +20,42 @@ A shared, real-time grocery list for a household. Google sign-in, Supabase backe
 3. **Supabase → Authentication → Providers:** enable Google and paste the client ID and secret. Turn off Email and Anonymous sign-ins.
 4. **Supabase → Authentication → URL Configuration:** set the Site URL to your exact deployed address, and add the same URL under Redirect URLs. Don't use wildcards.
 
+## Agent access (MCP + REST)
+
+Let an assistant, such as a WhatsApp agent, read and edit the list for you.
+
+1. In the app, open **Household → Agent access**, name the token and tap **Create token**. Copy it right away; it's shown only once.
+2. Give your agent:
+   - **MCP server URL:** `https://hwiwlyikrjwkqzmovump.supabase.co/functions/v1/pantry-agent/mcp`
+     (Streamable HTTP, stateless JSON responses)
+   - **Header:** `Authorization: Bearer pr_…`
+     If your agent can't set headers, use `X-Api-Key: pr_…` or, as a last resort, append `?key=pr_…` to the URL. That puts the token in logs, so revoke and rotate it if the URL leaks.
+
+MCP tools: `list_groceries`, `add_groceries`, `check_off_groceries`, `remove_groceries`, `clear_cart`.
+
+REST (same base URL, without `/mcp`, same auth header):
+
+| Method | Path | Body |
+|---|---|---|
+| GET | `/items` | n/a |
+| POST | `/items` | `{"items": ["milk", {"name": "eggs", "quantity": "12"}]}` |
+| POST | `/check` | `{"items": ["eggs"], "checked": true}` |
+| POST | `/remove` | `{"items": ["eggs"]}` |
+| POST | `/clear` | n/a, deletes checked-off items |
+
+```bash
+curl -X POST https://hwiwlyikrjwkqzmovump.supabase.co/functions/v1/pantry-agent/items \
+  -H "Authorization: Bearer pr_…" -H "Content-Type: application/json" \
+  -d '{"items":["oat milk",{"name":"eggs","quantity":"12"}]}'
+```
+
+How tokens work:
+- Each token is tied to one person and one household, and is stored only as a SHA-256 hash.
+- A token stops working when it's revoked, or when its owner leaves the household.
+- Items added through the agent show as "Name via agent".
+- Adding something already on the list doesn't create a duplicate. Adding something already in the cart moves it back to the list.
+- The Edge Function (`supabase/functions/pantry-agent`) holds no secrets. It forwards to token-checked Postgres functions (`agent_*`).
+
 ## Hosting
 
 Any static host works. **Cloudflare Pages** or **Netlify** are recommended because they apply `_headers`, which adds clickjacking protection and HSTS.

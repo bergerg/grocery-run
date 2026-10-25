@@ -80,6 +80,14 @@ li.done .qty{opacity:.5}
 .hlist button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 14px;font-weight:500;display:flex;justify-content:space-between}
 .hlist button.on{border-color:var(--basil)}
 .code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:24px;letter-spacing:.14em;font-weight:700;color:var(--tomato);user-select:all;overflow-wrap:anywhere}
+.tlist{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.tlist:empty{display:none}
+.tok{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg)}
+.tok .txt{min-width:0}
+.tok .revoke{border:0;background:none;color:var(--tomato);font-weight:600;font-size:14px;padding:4px 6px}
+.kv{display:flex;flex-direction:column;gap:2px;min-width:0}
+.kv span{font-size:12px;color:var(--muted)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;overflow-wrap:anywhere;user-select:all}
 .share{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:14px;background:var(--bg)}
 .small{font-size:13px;color:var(--muted);margin:0;overflow-wrap:anywhere}
 .err{color:var(--tomato);font-size:14px;margin:0}

@@ -106,16 +106,51 @@ $("rotate").onclick = async () => {
 function openSheet(){
   showErr($("sheetErr"),"");
   for (const [id,label] of [["leave","Leave household"],["rotate","New code"]]){ $(id).dataset.confirm=""; $(id).textContent=label; }
+  $("newToken").hidden=true; $("tokVal").textContent="";
   $("sheet").hidden=false;
+  if (state.hid) loadTokens();
 }
-function closeSheet(){ $("sheet").hidden=true; }
+
+// ---------- Agent tokens ----------
+const MCP_URL = `${SUPABASE_URL}/functions/v1/pantry-agent/mcp`;
+function ago(ts){ if(!ts) return "never used"; const m=Math.round((Date.now()-new Date(ts))/60000);
+  return m<2?"used just now":m<60?`used ${m} min ago`:m<1440?`used ${Math.round(m/60)} h ago`:`used ${Math.round(m/1440)} d ago`; }
+async function loadTokens(){
+  const { data, error } = await sb.from("api_tokens").select("id,name,token_hint,created_at,last_used_at")
+    .eq("household_id", state.hid).eq("user_id", state.user.id).order("created_at");
+  if (error) return showErr($("sheetErr"), error.message);
+  $("tokenList").innerHTML = data.map(t=>`<div class="tok"><div class="txt"><div class="name">${esc(t.name)}</div>
+    <div class="meta">…${esc(t.token_hint)} · ${esc(ago(t.last_used_at))}</div></div>
+    <button class="revoke" type="button" data-tok="${esc(t.id)}">Revoke</button></div>`).join("");
+  $("tokenList").querySelectorAll("[data-tok]").forEach(b=>b.onclick=async()=>{
+    if (b.dataset.confirm!=="1"){ b.dataset.confirm="1"; b.textContent="Tap to confirm"; return; }
+    const { error } = await sb.from("api_tokens").delete().eq("id", b.dataset.tok);
+    if (error) return showErr($("sheetErr"), error.message);
+    toast("Token revoked"); loadTokens();
+  });
+}
+$("tokenForm").onsubmit = async e => {
+  e.preventDefault();
+  const { data, error } = await sb.rpc("create_api_token", { p_household: state.hid, p_name: $("tokenName").value.trim() || "Agent" });
+  if (error) return showErr($("sheetErr"), error.message);
+  $("tokenName").value=""; $("tokVal").textContent=data.token; $("mcpUrl").textContent=MCP_URL; $("newToken").hidden=false;
+  loadTokens();
+};
+async function copyText(text, label){
+  try{ await navigator.clipboard.writeText(text); toast(`${label} copied`); }
+  catch{ toast("Select the text and copy it"); }
+}
+$("copyTok").onclick = () => copyText($("tokVal").textContent, "Token");
+$("copyMcp").onclick = () => copyText(MCP_URL, "MCP URL");
+function closeSheet(){ $("sheet").hidden=true; $("newToken").hidden=true; $("tokVal").textContent=""; }
 $("openSheet").onclick=openSheet; $("openSheet2").onclick=openSheet; $("closeSheet").onclick=closeSheet;
 $("sheet").onclick=e=>{ if(e.target.id==="sheet") closeSheet(); };
 document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !$("sheet").hidden) closeSheet(); });
 function inviteURL(code){ return `${location.origin}${location.pathname}?join=${encodeURIComponent(code)}`; }
 function renderSheet(){
   const h = state.households.find(x=>x.id===state.hid);
-  $("shareBox").hidden=!h; $("leave").hidden=!h;
+  $("shareBox").hidden=!h; $("leave").hidden=!h; $("agentBox").hidden=!h;
+  if (h && !$("sheet").hidden) loadTokens();
   if (h){ $("inviteCode").textContent=h.invite_code; $("inviteLink").textContent=inviteURL(h.invite_code); }
   $("myHouseholds").hidden = state.households.length<2;
   $("hlist").innerHTML = state.households.map(x=>`<button type="button" data-id="${esc(x.id)}" class="${x.id===state.hid?"on":""}"><span>${esc(x.name)}</span><span class="small">${x.id===state.hid?"Current":""}</span></button>`).join("");

@@ -1,4 +1,4 @@
--- NOT YET APPLIED. Run in Supabase SQL editor (project: shoplist / hwiwlyikrjwkqzmovump).
+-- Applied 2026-10-25.
 -- The app's new code expects this: join_household returns null on a wrong code, and the author is set server-side.
 begin;
 
@@ -38,7 +38,7 @@ returns text language sql volatile set search_path = ''
 as $$ select string_agg(substr('ABCDEFGHJKMNPQRSTUVWXYZ23456789', 1 + (get_byte(b, i) % 31), 1), '')
       from (select extensions.gen_random_bytes(10) b) x, generate_series(0, 9) i $$;
 alter table public.households alter column invite_code set default private.new_invite_code();
-update public.households set invite_code = private.new_invite_code();
+update public.households set invite_code = private.new_invite_code() where char_length(invite_code) < 10;
 
 -- 4. Rate-limit wrong join codes: 10 per hour per user
 create table if not exists private.join_attempts (user_id uuid not null, at timestamptz not null default now());
