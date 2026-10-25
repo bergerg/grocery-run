@@ -1,0 +1,8 @@
+# Security headers for Cloudflare Pages / Netlify (ignored by GitHub Pages; index.html also carries the CSP as a meta tag)
+/*
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.googleusercontent.com; connect-src https://hwiwlyikrjwkqzmovump.supabase.co wss://hwiwlyikrjwkqzmovump.supabase.co; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
