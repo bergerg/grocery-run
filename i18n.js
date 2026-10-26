@@ -9,7 +9,7 @@ const I18N = {
     lede: "רשימת קניות אחת לכל הבית. מסמנים מוצר בסופר, והוא מתעדכן אצל כולם בטלפון.",
     signin: "כניסה עם Google",
     language: "שפה",
-    household_btn: "רשימה",
+    household_btn: "הגדרות רשימה",
     connecting: "מתחבר…",
     reconnecting: "מתחבר מחדש…",
     no_household: "עדיין אין רשימה",
