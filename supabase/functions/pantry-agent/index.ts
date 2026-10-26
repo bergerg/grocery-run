@@ -18,9 +18,14 @@ const json = (body: unknown, status = 200) =>
 class ApiError extends Error { constructor(public status: number, msg: string) { super(msg); } }
 
 function tokenFrom(req: Request, url: URL): string {
-  const auth = req.headers.get("authorization") ?? "";
-  const t = auth.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : (req.headers.get("x-api-key") ?? url.searchParams.get("key") ?? "").trim();
-  if (!/^pr_[0-9a-f]{48}$/.test(t)) throw new ApiError(401, "Missing or malformed agent token. Create one in Pantry Run → Household → Agent access.");
+  // Accept "Bearer pr_...", a bare "pr_..." in Authorization, X-Api-Key, or ?key=
+  const raw = req.headers.get("authorization") || req.headers.get("x-api-key") || url.searchParams.get("key") || "";
+  const t = raw.trim().replace(/^bearer\s+/i, "").replace(/^["']|["']$/g, "").trim();
+  if (!/^pr_[0-9a-f]{48}$/.test(t)) {
+    const src = req.headers.get("authorization") ? "authorization" : req.headers.get("x-api-key") ? "x-api-key" : url.searchParams.get("key") ? "query" : "none";
+    console.log(JSON.stringify({ auth: "malformed", src, len: t.length, prefix: t.slice(0, 3), tail: t.slice(-4) }));
+    throw new ApiError(401, "Missing or malformed agent token. Create one in the app: Household → Agent access.");
+  }
   return t;
 }
 
@@ -32,7 +37,7 @@ async function rpc(fn: string, args: Record<string, unknown>) {
   });
   const body = await r.json().catch(() => ({}));
   if (!r.ok) {
-    if (body?.code === "28000") throw new ApiError(401, "Invalid or revoked token.");
+    if (body?.code === "28000") { console.log(JSON.stringify({ auth: "rejected", tail: String(args.p_token ?? "").slice(-4) })); throw new ApiError(401, "Invalid or revoked token."); }
     if (body?.code === "PGRST202") throw new ApiError(501, "This action isn't enabled on the server yet.");
     throw new ApiError(r.status >= 500 ? 502 : 400, body?.message ?? "Request failed.");
   }
