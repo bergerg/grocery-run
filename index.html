@@ -1,14 +1,15 @@
 <!doctype html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.googleusercontent.com; connect-src https://hwiwlyikrjwkqzmovump.supabase.co wss://hwiwlyikrjwkqzmovump.supabase.co; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>Pantry Run</title>
+<title>קניות הבית</title>
 <meta name="theme-color" content="#1f3b2d">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&family=Rubik:wght@400;500;600;800&display=swap">
 <link rel="stylesheet" href="app.css">
+<script src="i18n.js" defer></script>
 <script src="vendor/supabase.js" defer></script>
 <script src="app.js" defer></script>
 </head>
@@ -16,13 +17,17 @@
 
 <section id="login" class="login wrap" hidden>
   <div class="card">
-    <h1 class="brand">Pantry<br>Run<span>.</span></h1>
-    <p class="lede">One grocery list for the whole household. Tick something off at the store and it disappears from everyone's phone.</p>
+    <h1 class="brand" data-i18n-html="brand_html">קניות<br>הבית<span>.</span></h1>
+    <p class="lede" data-i18n="lede"></p>
     <button id="gsignin" class="gbtn" type="button">
       <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
-      Continue with Google
+      <span data-i18n="signin"></span>
     </button>
     <p id="loginErr" class="err" hidden></p>
+    <div class="lang" role="group" aria-label="Language / שפה">
+      <button type="button" data-lang="he" lang="he">עברית</button>
+      <button type="button" data-lang="en" lang="en">English</button>
+    </div>
   </div>
 </section>
 
@@ -30,26 +35,26 @@
   <header class="top">
     <div class="wrap">
       <div class="hh">
-        <h1 id="hhName">…</h1>
-        <div class="sub"><span id="live" class="dot"></span><span id="count">Connecting</span></div>
+        <h1 id="hhName" dir="auto">…</h1>
+        <div class="sub"><span id="live" class="dot"></span><span id="count" data-i18n="connecting"></span></div>
       </div>
       <div id="faces" class="faces"></div>
-      <button id="openSheet" class="icon" type="button">Household</button>
+      <button id="openSheet" class="icon" type="button" data-i18n="household_btn"></button>
     </div>
   </header>
 
   <main class="wrap">
     <div id="needHousehold" class="empty" hidden>
-      <strong>Start a household</strong>
-      Create one, or join with the 10-character code someone sent you.
-      <div class="gap-top"><button class="btn" type="button" id="openSheet2">Set up household</button></div>
+      <strong data-i18n="start_title"></strong>
+      <span data-i18n="start_body"></span>
+      <div class="gap-top"><button class="btn" type="button" id="openSheet2" data-i18n="setup_btn"></button></div>
     </div>
     <div id="listArea" hidden>
-      <div class="section-label"><span>To buy · <span id="nTodo">0</span></span></div>
+      <div class="section-label"><span><span data-i18n="to_buy"></span> · <span id="nTodo">0</span></span></div>
       <ul id="todo"></ul>
-      <div id="emptyTodo" class="empty" hidden><strong>All stocked up</strong>Add the first thing you're out of below.</div>
+      <div id="emptyTodo" class="empty" hidden><strong data-i18n="empty_title"></strong><span data-i18n="empty_body"></span></div>
       <div id="doneWrap" hidden>
-        <div class="section-label"><span>In the cart · <span id="nDone">0</span></span><button id="clearDone" type="button">Clear</button></div>
+        <div class="section-label"><span><span data-i18n="in_cart"></span> · <span id="nDone">0</span></span><button id="clearDone" type="button" data-i18n="clear"></button></div>
         <ul id="done"></ul>
       </div>
     </div>
@@ -57,9 +62,9 @@
 
   <div class="add" id="addBar" hidden>
     <form id="addForm" class="wrap" autocomplete="off">
-      <input id="addName" placeholder="Add an item, e.g. oat milk" maxlength="120" aria-label="Item" required>
-      <input id="addQty" placeholder="Qty" maxlength="30" aria-label="Quantity">
-      <button class="go" type="submit">Add</button>
+      <input id="addName" dir="auto" data-i18n-ph="add_ph" data-i18n-aria="item_aria" maxlength="120" required>
+      <input id="addQty" dir="auto" data-i18n-ph="qty_ph" data-i18n-aria="qty_aria" maxlength="30">
+      <button class="go" type="submit" data-i18n="add_btn"></button>
     </form>
   </div>
 </div>
@@ -67,51 +72,58 @@
 <div id="sheet" class="sheet" hidden>
   <div class="panel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
     <div class="row spread">
-      <h2 id="sheetTitle">Household</h2>
-      <button id="closeSheet" class="icon" type="button">Done</button>
+      <h2 id="sheetTitle" data-i18n="sheet_title"></h2>
+      <button id="closeSheet" class="icon" type="button" data-i18n="close"></button>
     </div>
 
     <div id="shareBox" class="share" hidden>
-      <h3>Invite code</h3>
-      <div class="code" id="inviteCode"></div>
-      <p class="small">Send this link, or the code. They sign in with Google and land on this list.<br><span id="inviteLink"></span></p>
+      <h3 data-i18n="invite_code"></h3>
+      <div class="code" id="inviteCode" dir="ltr"></div>
+      <p class="small"><span data-i18n="invite_help"></span><br><span id="inviteLink" dir="ltr"></span></p>
       <div class="row">
-        <button id="copyLink" class="btn" type="button">Copy invite link</button>
-        <button id="rotate" class="btn ghost" type="button">New code</button>
+        <button id="copyLink" class="btn" type="button" data-i18n="copy_link"></button>
+        <button id="rotate" class="btn ghost" type="button" data-i18n="new_code"></button>
       </div>
     </div>
 
     <div id="myHouseholds" hidden>
-      <h3 class="h3gap">Your households</h3>
+      <h3 class="h3gap" data-i18n="your_households"></h3>
       <div class="hlist" id="hlist"></div>
     </div>
 
     <div id="agentBox" hidden>
-      <h3 class="h3gap">Agent access</h3>
-      <p class="small">Let an assistant (MCP or API) read and add to this list on your behalf. Each token works for this household only, and stops working if you leave it.</p>
+      <h3 class="h3gap" data-i18n="agent_access"></h3>
+      <p class="small gap-bottom" data-i18n="agent_help"></p>
       <div id="tokenList" class="tlist"></div>
-      <form class="row" id="tokenForm"><input id="tokenName" placeholder="e.g. WhatsApp agent" maxlength="40"><button class="btn ghost" type="submit">Create token</button></form>
-      <div id="newToken" class="share" hidden>
-        <h3>Copy now. It won't be shown again</h3>
-        <div class="kv"><span>Token</span><code id="tokVal"></code></div>
-        <div class="kv"><span>MCP URL</span><code id="mcpUrl"></code></div>
-        <p class="small">Send the token as the header <code>Authorization: Bearer &lt;token&gt;</code>.</p>
-        <div class="row"><button id="copyTok" class="btn" type="button">Copy token</button><button id="copyMcp" class="btn ghost" type="button">Copy MCP URL</button></div>
+      <form class="row" id="tokenForm"><input id="tokenName" dir="auto" data-i18n-ph="token_ph" maxlength="40"><button class="btn ghost" type="submit" data-i18n="create_token"></button></form>
+      <div id="newToken" class="share gap-top" hidden>
+        <h3 data-i18n="copy_now"></h3>
+        <div class="kv"><span data-i18n="token"></span><code id="tokVal" dir="ltr"></code></div>
+        <div class="kv"><span data-i18n="mcp_url"></span><code id="mcpUrl" dir="ltr"></code></div>
+        <p class="small" data-i18n-html="token_header_html"></p>
+        <div class="row"><button id="copyTok" class="btn" type="button" data-i18n="copy_token"></button><button id="copyMcp" class="btn ghost" type="button" data-i18n="copy_mcp"></button></div>
       </div>
     </div>
 
     <div>
-      <h3 class="h3gap">Join with a code</h3>
-      <form class="row" id="joinForm"><input id="joinCode" placeholder="ABCDE23456" maxlength="12" autocapitalize="characters"><button class="btn" type="submit">Join</button></form>
+      <h3 class="h3gap" data-i18n="join_title"></h3>
+      <form class="row" id="joinForm"><input id="joinCode" dir="ltr" placeholder="ABCDE23456" maxlength="12" autocapitalize="characters"><button class="btn" type="submit" data-i18n="join_btn"></button></form>
     </div>
     <div>
-      <h3 class="h3gap">Create a new one</h3>
-      <form class="row" id="createForm"><input id="createName" placeholder="e.g. Home" maxlength="60"><button class="btn ghost" type="submit">Create</button></form>
+      <h3 class="h3gap" data-i18n="create_title"></h3>
+      <form class="row" id="createForm"><input id="createName" dir="auto" data-i18n-ph="create_ph" maxlength="60"><button class="btn ghost" type="submit" data-i18n="create_btn"></button></form>
+    </div>
+    <div>
+      <h3 class="h3gap" data-i18n="language"></h3>
+      <div class="lang" role="group" aria-label="Language / שפה">
+        <button type="button" data-lang="he" lang="he">עברית</button>
+        <button type="button" data-lang="en" lang="en">English</button>
+      </div>
     </div>
     <p id="sheetErr" class="err" hidden></p>
     <div class="row spread">
-      <button id="leave" class="btn ghost" type="button" hidden>Leave household</button>
-      <button id="signout" class="btn ghost" type="button">Sign out</button>
+      <button id="leave" class="btn ghost" type="button" hidden data-i18n="leave"></button>
+      <button id="signout" class="btn ghost" type="button" data-i18n="signout"></button>
     </div>
   </div>
 </div>

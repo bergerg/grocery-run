@@ -1,10 +1,12 @@
 # Pantry Run
 
-A shared, real-time grocery list for a household. Google sign-in, Supabase backend, no build step.
+A shared, real-time grocery list for a household (קניות הבית). Google sign-in, Supabase backend, no build step.
+
+Hebrew (RTL) is the default UI language, with English available from the switch on the sign-in screen and in the Household sheet. Strings live in `i18n.js`.
 
 ## How it works
 
-- Static site: `index.html`, `app.css`, `app.js`, and a vendored copy of `@supabase/supabase-js` 2.45.4 in `vendor/` (no third-party script CDN).
+- Static site: `index.html`, `app.css`, `i18n.js`, `app.js`, and a vendored copy of `@supabase/supabase-js` 2.45.4 in `vendor/` (no third-party script CDN).
 - The browser talks straight to Supabase: REST for reads and writes, a WebSocket for live updates.
 - The key in `app.js` is the **publishable** key. It is public by design. All access control lives in Postgres:
   - Row Level Security: you only see households you're a member of, and their items and members.
