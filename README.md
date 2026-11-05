@@ -22,6 +22,11 @@ Hebrew (RTL) is the default UI language, with English available from the switch 
 3. **Supabase → Authentication → Providers:** enable Google and paste the client ID and secret. Turn off Email and Anonymous sign-ins.
 4. **Supabase → Authentication → URL Configuration:** set the Site URL to your exact deployed address, and add the same URL under Redirect URLs. Don't use wildcards.
 
+## Insights
+
+`insights.html` shows purchase history for the current household: items bought, shopping trips, typical time from adding to buying, items that are probably running low (one-tap add), most-bought items, shopping days and who adds items.
+It reads `item_events`, which a trigger on `items` fills (`006_item_events.sql`). History starts on 5 Nov 2026; items cleared before then weren't recorded.
+
 ## Agent access (MCP + REST)
 
 Let an assistant, such as a WhatsApp agent, read and edit the list for you.

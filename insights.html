@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.googleusercontent.com; connect-src https://hwiwlyikrjwkqzmovump.supabase.co wss://hwiwlyikrjwkqzmovump.supabase.co; base-uri 'none'; form-action 'none'; manifest-src 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>תובנות</title>
+<meta name="theme-color" content="#1f3b2d">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&family=Rubik:wght@400;500;600;800&display=swap">
+<link rel="stylesheet" href="app.css">
+<script src="i18n.js" defer></script>
+<script src="vendor/supabase.js" defer></script>
+<script src="insights.js" defer></script>
+</head>
+<body class="insights">
+<header class="top">
+  <div class="wrap">
+    <a class="icon back" href="./" data-i18n="back"></a>
+    <div class="hh">
+      <h1 data-i18n="insights_title"></h1>
+      <div class="sub" id="hhSub" dir="auto"></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap ins">
+  <div class="seg" role="group" data-i18n-aria="range_aria" id="range">
+    <button type="button" data-range="30" data-i18n="range_30"></button>
+    <button type="button" data-range="90" data-i18n="range_90"></button>
+    <button type="button" data-range="365" data-i18n="range_365"></button>
+  </div>
+
+  <section class="tiles" aria-live="polite">
+    <div class="tile"><div class="tile-v" id="stBought">–</div><div class="tile-l" data-i18n="stat_bought"></div></div>
+    <div class="tile"><div class="tile-v" id="stTrips">–</div><div class="tile-l" data-i18n="stat_trips"></div></div>
+    <div class="tile"><div class="tile-v" id="stTtb">–</div><div class="tile-l" data-i18n="stat_ttb"></div></div>
+  </section>
+
+  <div id="emptyAll" class="empty" hidden>
+    <strong data-i18n="empty_insights_title"></strong>
+    <span data-i18n="empty_insights_body"></span>
+  </div>
+
+  <section class="card" id="lowCard">
+    <h2 data-i18n="low_title"></h2>
+    <p class="small" data-i18n="low_help"></p>
+    <ul class="low" id="lowList"></ul>
+    <p class="small muted-empty" id="lowEmpty" data-i18n="low_empty" hidden></p>
+  </section>
+
+  <section class="card">
+    <h2 data-i18n="top_title"></h2>
+    <div class="hbars" id="topBars"></div>
+  </section>
+
+  <section class="card">
+    <h2 data-i18n="weekday_title"></h2>
+    <div class="cols" id="wdCols"></div>
+  </section>
+
+  <section class="card">
+    <h2 data-i18n="adders_title"></h2>
+    <div class="hbars" id="adderBars"></div>
+  </section>
+
+  <p class="small foot" id="since"></p>
+</main>
+
+<div id="tip" class="tip" role="tooltip" hidden></div>
+<div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>
