@@ -226,9 +226,25 @@ document.addEventListener("click", async e=>{
     if (error){ state.items.set(id,it); render(); toast(tErr(error)); }
   }
 });
+// Quantity: positive numbers only (digits, one decimal point). Comma is accepted as a decimal point.
+function sanitizeQty(v){
+  let s = String(v||"").replace(/,/g,".").replace(/[^0-9.]/g,"");
+  const i = s.indexOf(".");
+  if (i !== -1) s = s.slice(0,i+1) + s.slice(i+1).replace(/\./g,"");
+  return s.slice(0,6);
+}
+function cleanQty(v){
+  const s = sanitizeQty(v).replace(/\.$/,"");
+  const n = parseFloat(s);
+  return n > 0 ? String(n) : null;
+}
+$("addQty").addEventListener("input", e => {
+  const el = e.target, clean = sanitizeQty(el.value);
+  if (clean !== el.value) el.value = clean;
+});
 $("addForm").onsubmit = async e => {
   e.preventDefault();
-  const name=$("addName").value.trim(), quantity=$("addQty").value.trim()||null; if(!name) return;
+  const name=$("addName").value.trim(), quantity=cleanQty($("addQty").value); if(!name) return;
   $("addName").value=""; $("addQty").value=""; $("addName").focus();
   // Author is set server-side by a trigger; the client can't claim to be someone else.
   const { data, error } = await sb.from("items").insert({ household_id:state.hid, name, quantity }).select().single();
