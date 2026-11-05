@@ -120,6 +120,10 @@ const I18N = {
     added_h: n => n === 1 ? "לפני שעה" : n === 2 ? "לפני שעתיים" : `לפני ${n} שעות`,
     added_yesterday: "אתמול",
     added_on: "ב־{date}",
+    list_name: "שם הרשימה",
+    save: "שמירה",
+    renamed: "שם הרשימה עודכן",
+    name_empty: "צריך לתת לרשימה שם.",
   },
   en: {
     dir: "ltr",
@@ -239,6 +243,10 @@ const I18N = {
     added_h: n => n === 1 ? "1 hour ago" : `${n} hours ago`,
     added_yesterday: "yesterday",
     added_on: "on {date}",
+    list_name: "List name",
+    save: "Save",
+    renamed: "List name updated",
+    name_empty: "Give the list a name.",
   },
 };
 

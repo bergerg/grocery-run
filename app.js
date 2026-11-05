@@ -92,6 +92,16 @@ $("createForm").onsubmit = async e => {
   if (error) return showErr($("sheetErr"), tErr(error));
   $("createName").value=""; await loadHouseholds(data.id); toast(t("created",{name}));
 };
+$("renameForm").onsubmit = async e => {
+  e.preventDefault();
+  const name = $("renameInput").value.trim().slice(0,60);
+  if (!name) return showErr($("sheetErr"), t("name_empty"));
+  const h = state.households.find(x=>x.id===state.hid); if (!h || name===h.name) return;
+  const prev = h.name; h.name = name; renderHeader(); renderSheet(); showErr($("sheetErr"),"");
+  const { error } = await sb.from("households").update({ name }).eq("id", state.hid);
+  if (error){ h.name = prev; renderHeader(); renderSheet(); return showErr($("sheetErr"), tErr(error)); }
+  $("renameInput").blur(); toast(t("renamed"));
+};
 $("leave").onclick = async () => {
   if (!armed($("leave"), "leave_confirm")) return;
   const { error } = await sb.from("household_members").delete().eq("household_id",state.hid).eq("user_id",state.user.id);
@@ -123,6 +133,8 @@ function inviteURL(code){ return `${location.origin}${location.pathname}?join=${
 function renderSheet(){
   const h = state.households.find(x=>x.id===state.hid);
   $("shareBox").hidden=!h; $("leave").hidden=!h; $("agentBox").hidden=!h;
+  $("renameBox").hidden=!h;
+  if (h && document.activeElement !== $("renameInput")) $("renameInput").value = h.name;
   if (h){ $("inviteCode").textContent=h.invite_code; $("inviteLink").textContent=inviteURL(h.invite_code); }
   $("myHouseholds").hidden = state.households.length<2;
   $("hlist").innerHTML = state.households.map(x=>`<button type="button" data-id="${esc(x.id)}" class="${x.id===state.hid?"on":""}"><span dir="auto">${esc(x.name)}</span><span class="small">${x.id===state.hid?esc(t("current")):""}</span></button>`).join("");
@@ -280,6 +292,9 @@ function subscribe(){
     // Supabase can't filter DELETE events; with RLS they carry only the row id, so we drop ids we don't hold.
     .on("postgres_changes",{ event:"DELETE", schema:"public", table:"items" }, p=>{ if(state.items.delete(p.old.id)) render(); })
     .on("postgres_changes",{ event:"*", schema:"public", table:"household_members", filter:`household_id=eq.${hid}` }, ()=>loadMembers().then(render))
+    .on("postgres_changes",{ event:"UPDATE", schema:"public", table:"households", filter:`id=eq.${hid}` }, p=>{
+      const h = state.households.find(x=>x.id===p.new.id); if (!h) return;
+      Object.assign(h, { name:p.new.name, invite_code:p.new.invite_code }); renderHeader(); renderSheet(); })
     .subscribe(status=>{
       state.live = status==="SUBSCRIBED"; state.rtError = status==="CHANNEL_ERROR" || status==="TIMED_OUT";
       $("live").classList.toggle("live",state.live); render();
