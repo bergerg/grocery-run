@@ -196,6 +196,17 @@ function authorHtml(n){
   const name = `<bdi>${esc(m ? m[1] : (n||""))}</bdi>`;
   return m ? esc(t("via_agent",{name:"\u0000"})).replace("\u0000", name) : name;
 }
+// "When added": under 24h relative, 24–48h "yesterday", older dd/mm/yyyy.
+function addedAgo(ts){
+  const then = new Date(ts), ms = Date.now() - then;
+  if (ms < 6e4) return t("added_now");
+  if (ms < 36e5) return t("added_min",[Math.floor(ms/6e4)]);
+  if (ms < 864e5) return t("added_h",[Math.floor(ms/36e5)]);
+  if (ms < 1728e5) return t("added_yesterday");
+  const p = n => String(n).padStart(2,"0");
+  return t("added_on",{date:`${p(then.getDate())}/${p(then.getMonth()+1)}/${then.getFullYear()}`});
+}
+setInterval(()=>{ if (!document.hidden && state.hid) render(); }, 60e3);
 function render(){
   if (!state.hid) return;
   const all=[...state.items.values()];
@@ -209,7 +220,7 @@ function render(){
 function row(i){
   return `<li data-id="${esc(i.id)}" class="${i.checked?"done":""}">
     <button class="chk" type="button" aria-label="${esc(t(i.checked?"uncheck_aria":"check_aria",{name:i.name}))}" data-act="toggle"></button>
-    <div class="txt"><div class="name" dir="auto">${esc(i.name)}</div><div class="meta">${authorHtml(i.added_by_name)}</div></div>
+    <div class="txt"><div class="name" dir="auto">${esc(i.name)}</div><div class="meta">${authorHtml(i.added_by_name)}${i.added_by_name ? " · " : ""}<time datetime="${esc(i.created_at)}">${esc(addedAgo(i.created_at))}</time></div></div>
     ${i.quantity?`<span class="qty" dir="auto">${esc(i.quantity)}</span>`:""}
     <button class="del" type="button" aria-label="${esc(t("remove_aria",{name:i.name}))}" data-act="del">×</button></li>`;
 }

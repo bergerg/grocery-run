@@ -115,6 +115,11 @@ const I18N = {
     dur_h: n => n === 1 ? "שעה" : `${n} שעות`,
     dur_d: n => n === 1 ? "יום" : `${n} ימים`,
     no_data: "אין נתונים בטווח הזה",
+    added_now: "עכשיו",
+    added_min: n => n === 1 ? "לפני דקה" : `לפני ${n} דקות`,
+    added_h: n => n === 1 ? "לפני שעה" : n === 2 ? "לפני שעתיים" : `לפני ${n} שעות`,
+    added_yesterday: "אתמול",
+    added_on: "ב־{date}",
   },
   en: {
     dir: "ltr",
@@ -229,6 +234,11 @@ const I18N = {
     dur_h: n => n === 1 ? "1 hour" : `${n} hours`,
     dur_d: n => n === 1 ? "1 day" : `${n} days`,
     no_data: "No data in this range",
+    added_now: "just now",
+    added_min: n => n === 1 ? "1 minute ago" : `${n} minutes ago`,
+    added_h: n => n === 1 ? "1 hour ago" : `${n} hours ago`,
+    added_yesterday: "yesterday",
+    added_on: "on {date}",
   },
 };
 
